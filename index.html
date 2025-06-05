@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPS Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #e0f7fa; /* 밝은 파란색 배경 */
+            color: #333;
+        }
+        .game-container {
+            text-align: center;
+            background-color: #ffeb3b; /* 노란색 배경 */
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            transition: transform 0.3s;
+        }
+        .game-container:hover {
+            transform: scale(1.05);
+        }
+        h1 {
+            font-size: 2rem;
+            color: #d32f2f; /* 빨간색 텍스트 */
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 20px 40px;
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #00bcd4; /* 시원한 파란색 버튼 */
+            color: white;
+            border: none;
+            border-radius: 10px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        button:hover {
+            background-color: #0097a7; /* 버튼 호버 색상 */
+            transform: scale(1.05);
+        }
+        .score {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4caf50; /* 초록색 텍스트 */
+        }
+        .message {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            color: #3f51b5; /* 파란색 텍스트 */
+        }
+        .hidden {
+            display: none;
+        }
+        #animalName {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff5722; /* 밝은 오렌지 색상 */
+            margin-top: 20px;
+        }
+        #gameOverContainer {
+            background-color: #fff176; /* 밝은 노란색 배경 */
+        }
+        #gameOverMessage {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff5722; /* 밝은 오렌지 색상 */
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container" id="gameContainer">
+    <h1>CPS Game</h1>
+    <button id="clickButton" onclick="startClicking()">Click as fast as you can!</button>
+    <p class="message" id="message">Click the button as fast as you can for 1 second!</p>
+    <p class="score" id="score">Clicks: 0</p>
+</div>
+
+<div class="game-container hidden" id="gameOverContainer">
+    <h1>Game Over</h1>
+    <p class="message" id="gameOverMessage"></p>
+    <p id="animalName" class="hidden"></p>
+    <button onclick="restartGame()">Play Again</button>
+</div>
+
+<script>
+    let clickCount = 0;
+    let isGameActive = false;
+    let gameStartTime = 0;
+
+    // 게임 시작 및 클릭 카운팅 함수
+    function startClicking() {
+        if (!isGameActive) {
+            isGameActive = true;
+            clickCount = 0;
+            document.getElementById("score").textContent = "Clicks: 0";
+            document.getElementById("message").textContent = "Go! Click as fast as you can!";
+            gameStartTime = Date.now();
+
+            // 1초 후에 게임 종료
+            setTimeout(endGame, 1000);
+        } else {
+            clickCount++;
+            document.getElementById("score").textContent = "Clicks: " + clickCount;
+        }
+    }
+
+    // 게임 종료 함수
+    function endGame() {
+        isGameActive = false;
+        document.getElementById("gameContainer").classList.add("hidden"); // 게임 화면 숨기기
+        document.getElementById("gameOverContainer").classList.remove("hidden"); // 게임 종료 화면 보이기
+        document.getElementById("gameOverMessage").textContent = "Your CPS is: " + clickCount;
+
+        // CPS에 맞는 동물 이름 표시
+        let animalName = document.getElementById("animalName");
+        if (clickCount >= 1 && clickCount < 2) {
+            animalName.textContent = "Turtle"; // 거북이
+        } else if (clickCount >= 2 && clickCount < 4) {
+            animalName.textContent = "Dog"; // 강아지
+        } else if (clickCount >= 4) {
+            animalName.textContent = "Cheetah"; // 치타
+        } else {
+            animalName.textContent = ""; // 기본값
+        }
+
+        // 이름을 표시
+        animalName.classList.remove("hidden");
+    }
+
+    // 게임 재시작 함수
+    function restartGame() {
+        // 게임 화면 복원
+        document.getElementById("gameContainer").classList.remove("hidden");
+        document.getElementById("gameOverContainer").classList.add("hidden");
+
+        // 초기화
+        clickCount = 0;
+        isGameActive = false;
+        document.getElementById("score").textContent = "Clicks: 0";
+        document.getElementById("message").textContent = "Click the button as fast as you can for 1 second!";
+        document.getElementById("clickButton").textContent = "Click as fast as you can!";
+        
+        // 동물 이름 초기화
+        document.getElementById("animalName").classList.add("hidden");
+        document.getElementById("animalName").textContent = "";
+    }
+</script>
+
+</body>
+</html>
